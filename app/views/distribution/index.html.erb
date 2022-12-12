@@ -1,0 +1,21 @@
+<%= javascript_tag do %>
+  window.calculationResult = <%= @calculation_result.to_json.html_safe %>;
+<% end %>
+
+<div id="header-container">
+  <%= render template: 'distribution/distribution-form/distribution-form' %>
+</div>
+<div id="body-container" style="display: flex; width: 100vw; justify-content: center;">
+  <%= render template: 'distribution/histogram-chart' %>
+  <%= render template: 'distribution/generation-result' %>
+</div>
+
+<script>
+    function adoptResponsiveBodyContainer() {
+        const headerContainer = document.getElementById('header-container');
+        const bodyContainer = document.getElementById('body-container');
+        bodyContainer.style.height = `calc(100vh - ${headerContainer.clientHeight}px)`;
+    }
+
+    adoptResponsiveBodyContainer();
+</script>

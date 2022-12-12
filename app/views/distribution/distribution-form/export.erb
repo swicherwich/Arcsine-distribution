@@ -1,0 +1,83 @@
+<div class="btn-group" id="export-calculation-data" style="visibility: hidden">
+  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Export
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" id="export-as-json">JSON</a>
+    <a class="dropdown-item" id="export-as-xlsx">XLSX</a>
+  </div>
+</div>
+
+<script>
+    function initExport() {
+        if (!window.calculationResult) return;
+
+        const FILENAME_PREFIX = 'DagumDistributionDataExport';
+
+        const initExportJson = () => {
+            // Init export as JSON
+            document.getElementById('export-calculation-data').style.visibility = 'visible';
+            const jsonExportElement = document.getElementById('export-as-json');
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.calculationResult, null, 4));
+            jsonExportElement.setAttribute("href", dataStr);
+            jsonExportElement.setAttribute("download", `${FILENAME_PREFIX}.json`);
+        };
+
+        const initExportXlsx = () => {
+            const xlsxExportButton = document.getElementById('export-as-xlsx');
+            xlsxExportButton.addEventListener('click', () => {
+                const optionsInfo = [
+                    ["Generation count", window.calculationResult.options.generationCount],
+                    ["Right boundary", window.calculationResult.options.max_x],
+                    ["Step", window.calculationResult.options.step],
+                    ["p1", window.calculationResult.options.p1],
+                    ["a2", window.calculationResult.options.a2],
+                    ["b3", window.calculationResult.options.b3],
+                    [''],
+                ];
+
+                const exportValuesInfo = [
+                    ['Mean (analytic)', window.calculationResult.pdfMeanValue],
+                    ['Variance (analytic)', window.calculationResult.pdfVarianceValue],
+                    [''],
+                    ['Mean (Neumann)', window.calculationResult.neumannMethodExpectedValue],
+                    ['Variance (Neumann)', window.calculationResult.neumannMethodVariance],
+                    ['Deviation (Neumann)', window.calculationResult.neumannMethodDeviation],
+                    [''],
+                    ['Mean (Metropolis)', window.calculationResult.metropolisMethodExpectedValue],
+                    ['Variance (Metropolis)', window.calculationResult.metropolisMethodVariance],
+                    ['Deviation (Metropolis)', window.calculationResult.metropolisMethodDeviation],
+                    [''],
+                    ['Mean (Piecewise Approximation)', window.calculationResult.piecewiseMethodExpectedValue],
+                    ['Variance (Piecewise Approximation)', window.calculationResult.piecewiseMethodVariance],
+                    ['Deviation (Piecewise Approximation)', window.calculationResult.piecewiseMethodDeviation],
+                    [''],
+                ];
+
+                const calculationResultByMethods = [
+                    ['Neumann method frequencies', ...window.calculationResult.neumannMethod],
+                    ['Metropolis method frequencies', ...window.calculationResult.metropolisMethod],
+                    ['Piecewise method frequencies', ...window.calculationResult.piecewiseApproximationMethod],
+                ];
+
+                const xlsxArrayData = [
+                    ...optionsInfo,
+                    ...exportValuesInfo,
+                    ...calculationResultByMethods,
+                ];
+
+                const SHEET_NAME = 'DagumDistributionData';
+                const XLSX = window.XLSX;
+                const wb = XLSX.utils.book_new();
+                wb.SheetNames.push(SHEET_NAME);
+                wb.Sheets[SHEET_NAME] = XLSX.utils.aoa_to_sheet(xlsxArrayData);
+                XLSX.writeFile(wb, `${FILENAME_PREFIX}.xlsx`);
+            });
+        };
+
+        initExportJson();
+        initExportXlsx();
+    }
+
+    initExport();
+</script>

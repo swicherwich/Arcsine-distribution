@@ -1,0 +1,165 @@
+<%= render template: 'distribution/distribution-form/about-this-distribution' %>
+
+<div class="p-2">
+  <form>
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">N = </span>
+      </div>
+      <input
+        type="number"
+        min="1"
+        class="form-control"
+        name="generation-count"
+        id="generation-count-distribution-input"
+        placeholder="Enter generation count value"
+        oninvalid="validate(this, 1)"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+
+    <!-- x -->
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">X ≤ </span>
+      </div>
+      <input
+        type="number"
+        min="0.01"
+        class="form-control"
+        name="right-boundary"
+        step="0.01"
+        id="right-boundary-distribution-input"
+        placeholder="Enter right boundary of calculation"
+        oninvalid="validate(this, 0.01)"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+    <!-- mu 
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">μ = </span>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        name="mu"
+        id="mu-distribution-input"
+        placeholder="Enter the mu value"
+        step="0.01"
+        oninvalid="Number(this.value) < 0
+          ? this.setCustomValidity('Mu value should be greater than Zero')
+          : this.setCustomValidity('Mu value is required field')"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>-->
+
+    <!-- p1 -->
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">p = </span>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        name="p1"
+        id="p1-distribution-input"
+        placeholder="Enter the P value"
+        step="0.01"
+        oninvalid="Number(this.value) < 0
+          ? this.setCustomValidity('P value should be greater than Zero')
+          : this.setCustomValidity('P value is required field')"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+    <!-- a2 -->
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">a = </span>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        name="a2"
+        id="a2-distribution-input"
+        placeholder="Enter the A value"
+        step="0.01"
+        oninvalid="Number(this.value) < 0
+          ? this.setCustomValidity('A value should be greater than Zero')
+          : this.setCustomValidity('A value is required field')"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+    <!-- b3 -->
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">b = </span>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        name="b3"
+        id="b3-distribution-input"
+        placeholder="Enter the B value"
+        step="0.01"
+        oninvalid="Number(this.value) < 0
+          ? this.setCustomValidity('B value should be greater than Zero')
+          : this.setCustomValidity('B value is required field')"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+ 
+ 
+
+
+    <div class="d-flex justify-content-between">
+      <div>
+        <!-- Button trigger "About this Distribution" modal -->
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#about-this-distribution-modal">
+          About
+        </button>
+      </div>
+      <div class="d-flex align-items-center" style="gap: 16px;">
+        <%= render template: 'distribution/distribution-form/export' %>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+    function validate(input, minExpectedValue) {
+        if (Number(input.value) < minExpectedValue) {
+            input.setCustomValidity(`Generation count should be greater than ${minExpectedValue}`);
+        }
+    }
+
+    function fillForm() { 
+        const params = (new URL(document.location)).searchParams;
+
+        const generationCount = params.get("generation-count");
+        const rightBoundary = params.get("right-boundary");
+        const p1 = params.get("p1");
+        const a2 = params.get("a2");
+        const b3 = params.get("b3");
+
+        document.getElementById('generation-count-distribution-input').value = generationCount ? Number(generationCount) : 10000;
+        document.getElementById('right-boundary-distribution-input').value = rightBoundary ? Number(rightBoundary) : 3;
+        document.getElementById('p1-distribution-input').value = p1 ? Number(p1) : 1;
+        document.getElementById('a2-distribution-input').value = a2 ? Number(a2) : 3;
+        document.getElementById('b3-distribution-input').value = b3 ? Number(b3) : 1;
+    }
+
+    fillForm();
+</script>
